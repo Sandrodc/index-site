@@ -1,0 +1,328 @@
+/* Index site. Colours are Design/Tokens.json (dark) expressed in OKLCH; names follow the app's tokens.
+   Layout follows the Figma "Site design" frame (1440 wide): hero copy and waitlist at 60px, sections at 160px. */
+:root {
+  color-scheme: dark;
+
+  /* surfaces, back to front */
+  --bg-window: oklch(0.129 0.003 286);   /* #070708 */
+  --bg-page: var(--bg-window);           /* one background, hero to footer, so nothing seams */
+  --bg-tile: oklch(0.219 0 0);           /* #1b1b1b: the step tiles */
+  --bg-content: oklch(0.192 0.004 286);
+  --bg-hover: oklch(0.271 0.009 286);    /* #26262b */
+
+  /* text */
+  --text-primary: oklch(0.947 0.004 286);
+  --text-body: oklch(0.871 0.007 286);
+  --text-secondary: oklch(0.712 0.013 286);
+  --text-tertiary: oklch(0.64 0.013 286);
+  --text-quaternary: oklch(0.485 0.013 286);
+
+  /* lines and fills (translucent white, so they sit on any surface) */
+  --ring-card: oklch(1 0 0 / 0.08);
+  --ring-elevated: oklch(1 0 0 / 0.14);
+  --ring-sheet: oklch(1 0 0 / 0.15);
+  --fill-faint: oklch(1 0 0 / 0.03);
+  --fill-chip: oklch(1 0 0 / 0.06);
+  --divider: oklch(1 0 0 / 0.07);
+
+  /* colour has jobs: accent = interaction, hues = identity, success = done */
+  --accent: oklch(0.693 0.162 259);
+  --accent-muted: oklch(0.693 0.162 259 / 0.16);
+  --danger: oklch(0.663 0.193 22.3);
+  --success: oklch(0.746 0.135 157);     /* #4cc38a */
+  --success-fill: oklch(0.746 0.135 157 / 0.14);
+  --hue-violet: oklch(0.754 0.143 295.7);
+
+  --button-fill: oklch(0.947 0.004 286);
+  --button-text: oklch(0.179 0.004 286);
+
+  --hairline: 1px;
+
+  /* type scale, by role */
+  --font-ui: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-display: -apple-system, BlinkMacSystemFont, "SF Pro Display", "Inter", "Segoe UI", system-ui, sans-serif;
+  --font-carved: "IxCinzel", "Cinzel", Georgia, serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --w-semibold: 590;   /* SF Pro's semibold on the variable axis */
+
+  --t-display: clamp(48px, 6.4vw, 80px);
+  --t-sub: clamp(19px, 1.9vw, 24px);
+  --t-h2: clamp(34px, 4.2vw, 50px);
+  --t-h3: 19px;
+  --t-lead: clamp(18px, 1.6vw, 21px);
+  --t-body: 16px;
+  --t-small: 14px;
+  --t-caption: 13px;
+  --t-cta: clamp(56px, 8.4vw, 120px);
+
+  /* spacing (Tokens.json space) */
+  --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s8: 32px; --s10: 40px; --s16: 64px; --s20: 80px;
+  --section: clamp(96px, 12.2vw, 176px);
+  --gutter: clamp(16px, 4vw, 40px);
+  --max: 1120px;       /* sections: 160px in at 1440 */
+  --max-wide: 1320px;  /* hero, showcase, waitlist: 60px in at 1440 */
+
+  --r-lg: 12px; --r-xl: 16px;
+}
+@media (min-resolution: 2dppx) { :root { --hairline: 0.5px; } }
+
+@font-face { font-family: "IxCinzel"; src: url("fonts/Cinzel.woff2") format("woff2"); font-weight: 400 900; font-display: swap; }
+
+*, *::before, *::after { box-sizing: border-box; }
+[hidden] { display: none !important; }
+html { background: var(--bg-page); -webkit-text-size-adjust: 100%; overflow-x: clip; }
+body {
+  margin: 0;
+  background: var(--bg-page);
+  color: var(--text-body);
+  font: 400 var(--t-body)/1.6 var(--font-ui);
+  -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+  font-synthesis: none;
+  overflow-x: clip;
+}
+::selection { background: var(--accent-muted); color: var(--text-primary); }
+img { display: block; max-width: 100%; height: auto; }
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 4px; }
+h1, h2, h3, p, figure { margin: 0; }
+h1, h2, h3 { color: var(--text-primary); font-family: var(--font-display); font-weight: var(--w-semibold); text-wrap: balance; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+.wrap { width: 100%; max-width: calc(var(--max) + var(--gutter) * 2); margin-inline: auto; padding-inline: var(--gutter); }
+
+/* ---------- buttons ---------- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 40px; padding-inline: 16px; border: 0; border-radius: 10px;
+  font: var(--w-semibold) var(--t-small)/1 var(--font-ui); letter-spacing: -0.01em;
+  text-decoration: none; white-space: nowrap; cursor: pointer;
+  user-select: none; -webkit-user-select: none;
+  transition: background-color 150ms ease-out, color 150ms ease-out, transform 120ms ease-out;
+}
+.btn:active { transform: scale(0.97); }
+.btn-primary { background: var(--button-fill); color: var(--button-text); }
+.btn-primary:hover { background: oklch(1 0 0); }
+.btn-pill { border-radius: 999px; }
+
+/* ---------- hero ---------- */
+/* Back to front: page background → .hero-stone (WebGL on black, lightened into the page) → .hero-shade → copy. */
+.hero {
+  position: relative; isolation: isolate; overflow: clip;
+  min-height: clamp(640px, 100svh, 940px);
+  display: grid; align-items: end;
+  background: var(--bg-page);   /* also the blend target for the stone canvas */
+}
+.hero-stone {
+  position: absolute; inset: 0; width: 100%; height: 100%; display: block; z-index: -2;
+  touch-action: pan-y; outline: none;
+  mix-blend-mode: lighten;   /* the scene is pure black so bloom works; lighten drops the black into the page */
+}
+.hero-stone:focus-visible { outline: none; }
+/* a soft dark ellipse that swallows the lower-left of the stone, so the copy reads over it */
+.hero-shade {
+  position: absolute; z-index: -1; pointer-events: none; max-width: none;
+  width: 2160px; height: 1136px;
+  left: calc(50% - 166px - 1080px); top: calc(63.8% - 568px);
+  transform: rotate(33.59deg);
+}
+.hero-inner { --max: var(--max-wide); position: relative; padding-block: 0 96px; pointer-events: none; }
+.hero-copy { display: grid; justify-items: start; gap: var(--s10); max-width: 710px; }
+.hero-copy > * { pointer-events: auto; }
+.hero-text { display: grid; gap: var(--s5); }
+.hero h1 { font-size: var(--t-display); line-height: 0.98; letter-spacing: -0.045em; color: oklch(1 0 0); }
+.hero-sub { font-size: var(--t-sub); line-height: 1.1; letter-spacing: -0.045em; color: oklch(1 0 0 / 0.6); text-wrap: pretty; }
+.hero .btn { width: 160px; }
+@media (max-width: 899px) {
+  .hero { min-height: max(620px, 92svh); }
+  .hero-inner { padding-bottom: 56px; }
+  .hero-shade { left: calc(50% - 60px - 1080px); top: calc(72% - 568px); }
+}
+
+/* ---------- showcase ---------- */
+.showcase { --max: var(--max-wide); }
+.showcase-frame {
+  position: relative; overflow: clip; aspect-ratio: 1292 / 810;
+  background: linear-gradient(to bottom, oklch(0.27 0 0), oklch(0.226 0 0));   /* #272727 → #1c1c1c */
+}
+/* the capture carries its own window shadow, so it's a touch larger than the frame and centred in it */
+.showcase-frame img { position: absolute; left: 50%; top: 50%; width: 103.17%; max-width: none; height: auto; transform: translate(-50%, -50%); }
+
+/* ---------- sections ---------- */
+.section { position: relative; padding-block: var(--section) 0; }
+.section-head { display: grid; gap: var(--s4); max-width: 680px; margin-bottom: var(--s16); }
+.section-head h2 { font-size: var(--t-h2); line-height: 1.08; letter-spacing: -0.028em; }
+.section-head p { font-size: var(--t-lead); line-height: 1.5; color: var(--text-secondary); text-wrap: pretty; }
+.how { padding-top: calc(var(--section) - 60px); }
+
+/* ---------- the three-step loop ---------- */
+.loop { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s6); }
+.loop-item { display: grid; align-content: start; gap: var(--s5); }
+.loop-copy { display: grid; gap: var(--s3); }
+.loop-text { display: grid; gap: 6px; }
+.numeral { font: 700 20px/1 var(--font-carved); letter-spacing: 0.12em; color: oklch(1 0 0 / 0.2); }
+.loop-item h3 { font-size: var(--t-h3); line-height: 1.35; letter-spacing: -0.01em; }
+.loop-item p { color: var(--text-secondary); font-size: var(--t-small); line-height: 1.6; text-wrap: pretty; }
+@media (max-width: 860px) { .loop { grid-template-columns: minmax(0, 1fr); gap: var(--s10); } }
+
+/* A tile is drawn at its design size (357 × 357) and scaled to its column by main.js (--k),
+   so the snippet keeps its proportions at any width. */
+.tile { position: relative; aspect-ratio: 1; overflow: clip; background: var(--bg-tile); }
+.tile-in {
+  position: absolute; left: 0; top: 0; width: 357.33px; height: 357.33px;
+  transform: scale(var(--k, 1)); transform-origin: 0 0;
+  background: var(--bg-tile);   /* here, not on .tile: the transform makes this the blend group the stones lighten against */
+  font-family: var(--font-ui); font-size: 7.73px; line-height: normal; color: var(--text-tertiary);
+}
+.tile-in img { max-width: none; }
+.tile-stone { position: absolute; object-fit: cover; mix-blend-mode: lighten; }
+.tile-shade { position: absolute; }
+.tile .sp { flex: 1 0 0; min-width: 1px; }
+.tile kbd, .tile b { font: inherit; }
+
+.snip {
+  position: absolute; left: 50%; top: 50%; width: 304px; translate: -50% -50%;
+  display: flex; flex-direction: column; overflow: hidden; border-radius: 7.73px;
+  background: oklch(0.225 0.006 286 / 0.3);   /* rgba(29,29,32,.3) */
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+  box-shadow: inset 0 0 0 0.5px oklch(1 0 0 / 0.05);
+}
+.snip-row { display: flex; align-items: center; gap: 7.73px; white-space: nowrap; }
+
+/* I · capture */
+.s1-head { position: absolute; left: 33.33px; top: 82px; width: 291px; display: flex; align-items: center; gap: 7.73px; }
+.keys { display: flex; gap: 2.5px; }
+.keys kbd {
+  width: 16px; height: 16px; display: grid; place-items: center; border-radius: 3.2px;
+  background: var(--fill-chip); box-shadow: inset 0 0 0 0.65px var(--ring-card); color: var(--text-secondary);
+}
+.s1 { top: calc(50% + 10.92px); padding: 4px; gap: 7.73px; }
+.s1-field {
+  display: flex; align-items: center; gap: 6px; padding: 7px 8px; border-radius: 5px;
+  background: oklch(0.72 0.04 280 / 0.08); box-shadow: inset 0 0 0 0.65px var(--ring-card);
+  font-size: 9px; color: var(--text-primary); white-space: nowrap;
+}
+.caret { width: 0.8px; height: 10px; background: var(--accent); }
+.s1-rows { display: flex; flex-direction: column; gap: 2px; padding-inline: 17px; }
+.s1-row { display: flex; align-items: center; gap: 7px; padding: 5px 6px; border-radius: 5.15px; overflow: hidden; }
+.s1-row .t { flex: 1 0 0; min-width: 1px; display: flex; flex-direction: column; gap: 1px; overflow: hidden; white-space: nowrap; }
+.s1-row .t > :first-child { font-size: 9px; color: var(--text-body); }
+.s1-row .t b { font-weight: 510; color: var(--text-primary); }
+.s1-row .t small { font-size: 7.73px; color: var(--text-tertiary); }
+.saved { padding: 1.5px 4px; border-radius: 3.2px; background: var(--success-fill); color: var(--success); }
+.when { color: var(--text-quaternary); }
+
+/* II · filing */
+.s2 { padding: 15.46px; gap: 7.73px; }
+.flow { position: relative; width: 273px; height: 104px; }
+.flow .links { position: absolute; inset: 0; }
+.flow .src, .flow .sec {
+  position: absolute; height: 18px; display: flex; align-items: center; gap: 5px; padding: 4px 6px;
+  border-radius: 5.15px; white-space: nowrap; overflow: hidden;
+}
+.flow .src { left: 0; width: 104px; background: var(--bg-hover); color: var(--text-primary); }
+.flow .sec { left: 168px; width: 105px; background: var(--fill-chip); box-shadow: inset 0 0 0 0.65px var(--ring-card); color: var(--text-body); }
+.flow .mark { color: var(--text-tertiary); }
+.flow .plus { color: var(--success); }
+
+/* III · skill */
+.s3 { padding: 15.46px; gap: 6px; }
+.s3 .file { gap: 5px; }
+.s3 .mono, .s3 .code { font-family: var(--font-mono); }
+.s3 .mono { color: var(--text-secondary); }
+.exported { display: flex; align-items: center; gap: 3px; color: var(--success); }
+.s3 hr { width: 100%; height: 0.65px; margin: 0; border: 0; background: var(--divider); }
+.code { display: flex; flex-direction: column; gap: 2px; line-height: 1.5; color: var(--text-body); white-space: pre; }
+.code .q { color: var(--text-quaternary); }
+.code .k { color: var(--hue-violet); }
+.code .p { color: var(--text-primary); }
+.code .s { color: var(--text-secondary); }
+
+/* ---------- Claude ---------- */
+.claude-grid { display: grid; grid-template-columns: 457px minmax(0, 1fr); gap: var(--s20); }
+.claude-copy { display: flex; flex-direction: column; justify-content: space-between; gap: var(--s10); padding-block: 40px 24px; }
+.claude-head { display: grid; gap: var(--s4); }
+.claude-head h2 { font-size: var(--t-h2); line-height: 1.08; letter-spacing: -0.028em; }
+.claude-lead { font-size: 18px; line-height: 1.5; color: var(--text-secondary); text-wrap: pretty; }
+.claude-body { font-size: var(--t-small); line-height: 1.6; color: var(--text-secondary); text-wrap: pretty; }
+/* the screenshot runs off the right edge of the page */
+.claude-shot { position: relative; width: 1010px; }
+.claude-shot .shot-img {
+  width: 100%; aspect-ratio: 1010 / 631; object-fit: cover; border-radius: var(--r-lg);
+  box-shadow: 0 0 0 1px var(--ring-sheet), 0 30px 80px -20px oklch(0 0 0 / 0.7);
+}
+/* fades the bottom edge of the screenshot into the page */
+.claude-shade {
+  position: absolute; pointer-events: none; max-width: none;
+  width: 390px; height: 1438px; left: 253px; top: -111px; transform: rotate(-90deg);
+}
+@media (max-width: 1100px) {
+  .claude-grid { grid-template-columns: minmax(0, 1fr); gap: var(--s10); }
+  .claude-copy { padding-block: 0; }
+  .claude-shot { width: 100%; }
+  .claude-shade { left: calc(44% - 195px); top: auto; bottom: -695px; }
+}
+
+/* ---------- feature grid ---------- */
+.features {
+  display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px;
+  border-radius: var(--r-xl); overflow: hidden; background: var(--divider); box-shadow: 0 0 0 1px var(--ring-card);
+}
+.feature { display: grid; align-content: start; gap: var(--s2); min-height: 178px; padding: var(--s8) var(--s6); background: var(--bg-page); transition: background-color 150ms ease-out; }
+.feature:hover { background: oklch(0.155 0.004 286); }
+.feature img { width: 20px; height: 20px; margin-bottom: var(--s3); }
+.feature h3 { font-size: 16px; line-height: 1.4; }
+.feature p { color: var(--text-secondary); font-size: var(--t-small); line-height: 1.55; text-wrap: pretty; }
+@media (max-width: 900px) { .features { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .features { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- waitlist ---------- */
+.waitlist { position: relative; isolation: isolate; overflow: clip;   /* clip, not hidden: a hidden box is still scrollable by scrollIntoView, which slid the stone sideways */ padding-block: 240px; background: var(--bg-page); }
+.waitlist-stone {
+  /* framed like the design's render: a big stone cropped by the section and the right edge,
+     with the face (where the name goes) in view */
+  position: absolute; z-index: -1; display: block;
+  left: calc(50% - 170px); top: 0; width: calc(50% + 170px); height: 100%;   /* only what's on screen: no pixels rendered just to be clipped. (A canvas won't stretch between left/right; it needs a width.) */
+  mix-blend-mode: lighten; touch-action: pan-y;
+}
+.waitlist-inner { --max: var(--max-wide); display: grid; justify-items: start; gap: var(--s20); }
+.waitlist h2 { max-width: 646px; font-size: var(--t-cta); line-height: 0.98; letter-spacing: -0.045em; color: oklch(1 0 0); }
+.waitlist h2 span { color: oklch(1 0 0 / 0.6); }
+.waitlist-form { position: relative; }
+.form { display: flex; gap: var(--s3); align-items: end; }
+.input {
+  width: 359px; height: 44px; padding-inline: 14px; border: 0; border-radius: 999px;
+  background: oklch(0.236 0.009 286 / 0.7);   /* rgba(33,33,38,.7) */
+  -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+  box-shadow: inset 0 0 0 1px var(--ring-card);
+  color: var(--text-primary); font: 400 16px/1.6 var(--font-ui);
+  transition: box-shadow 150ms ease-out;
+}
+.input::placeholder { color: var(--text-quaternary); }
+.input:hover { box-shadow: inset 0 0 0 1px var(--ring-elevated); }
+.input:focus { outline: none; box-shadow: inset 0 0 0 1px var(--accent), 0 0 0 3px var(--accent-muted); }
+.input[aria-invalid="true"] { box-shadow: inset 0 0 0 1px var(--danger); }
+.form .btn { height: 44px; }
+.form .btn:disabled { background: var(--bg-hover); color: var(--text-tertiary); cursor: default; transform: none; }
+.form-error { position: absolute; top: calc(100% + var(--s3)); left: 0; right: 0; min-height: 18px; padding-inline: 14px; color: var(--danger); font-size: var(--t-caption); line-height: 18px; display: flex; gap: 6px; align-items: center; }
+.form-error:empty { visibility: hidden; }
+.form-error svg { width: 14px; height: 14px; flex: none; }
+.done { max-width: 460px; min-height: 44px; color: var(--text-secondary); font-size: var(--t-small); line-height: 1.6; text-wrap: pretty; animation: done-in 300ms cubic-bezier(0.23, 1, 0.32, 1); }
+.done strong { color: var(--text-primary); font-weight: var(--w-semibold); }
+@keyframes done-in { from { opacity: 0; transform: translateY(6px); } }
+@media (max-width: 899px) {
+  /* the stone moves above the copy instead of beside it */
+  .waitlist { padding-block: 340px 120px; }
+  .waitlist-stone {
+    left: 0; right: 0; width: 100%; height: 380px;   /* stone centred, so the name never meets the edge */
+    -webkit-mask-image: linear-gradient(to bottom, #000 70%, transparent); mask-image: linear-gradient(to bottom, #000 70%, transparent);
+  }
+  .waitlist-inner { gap: var(--s10); }
+}
+@media (max-width: 560px) {
+  .waitlist-form { justify-self: stretch; }
+  .form { flex-direction: column; align-items: stretch; }
+  .input { width: 100%; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .done { animation: none; }
+}

@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Index — Transfer your knowledge to AI</title>
+<meta name="description" content="Index is your personal intelligence layer: a Mac app that turns what you save into cited guides, so AI answers from what you actually know.">
+<meta name="theme-color" content="#070708">
+<link rel="preload" href="fonts/Cinzel.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="fonts/NotoSansRunic-Regular.woff2" as="font" type="font/woff2" crossorigin>
+<!-- the hero stone needs three.js and the 5 MB model before it can draw; start both with the HTML -->
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="modulepreload" href="https://unpkg.com/three@0.170.0/build/three.module.js" crossorigin>
+<link rel="preload" href="models/granite.glb" as="fetch" type="model/gltf-binary" crossorigin>
+<link rel="stylesheet" href="styles.css">
+<script type="importmap">
+{ "imports": {
+  "three": "https://unpkg.com/three@0.170.0/build/three.module.js",
+  "three/addons/": "https://unpkg.com/three@0.170.0/examples/jsm/"
+} }
+</script>
+<script type="module" src="main.js"></script>
+</head>
+<body>
+
+<main id="top">
+  <!-- ============ hero: the granite stone from proto/stone ============ -->
+  <section class="hero" aria-labelledby="hero-title">
+    <canvas class="hero-stone" id="hero-stone" tabindex="0"
+      aria-label="A granite stone with a runic inscription. Press Space to tap it and decode the inscription; drag sideways to turn it."></canvas>
+    <img class="hero-shade" src="img/d/hero-shade.png" width="2160" height="1136" alt="" aria-hidden="true">
+    <div class="wrap hero-inner">
+      <div class="hero-copy">
+        <div class="hero-text">
+          <h1 id="hero-title">Transfer your knowledge to AI</h1>
+          <p class="hero-sub">Your personal intelligence layer to improve AI output</p>
+        </div>
+        <a class="btn btn-primary btn-pill" href="#waitlist">Join the waitlist</a>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap showcase">
+    <figure class="showcase-frame">
+      <img src="img/d/showcase.webp" width="2666" height="1783" decoding="async" alt="Index showing the Product design guide: a lead paragraph, a map of its sub-pages and how many sources each has, and an at-a-glance panel.">
+    </figure>
+  </div>
+
+  <!-- ============ the loop ============ -->
+  <section class="section how" id="how" aria-labelledby="how-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="how-title">Native and blazing fast</h2>
+        <p>Saving sources or notes takes one keystroke. Guides develop in the background that truly capture your taste.</p>
+      </div>
+      <div class="loop">
+        <!-- I · capture -->
+        <article class="loop-item">
+          <div class="tile" aria-hidden="true"><div class="tile-in">
+            <img class="tile-stone" src="img/d/step1-stone.webp" alt="" loading="lazy" style="left:-201.64px;top:138.79px;width:415.67px;height:488.41px;transform:rotate(104.39deg) scaleY(-1)">
+            <img class="tile-shade" src="img/d/step1-shade.png" alt="" style="left:-56.46px;top:-55.85px;width:464.21px;height:556.87px;transform:rotate(-30.01deg)">
+            <div class="snip-head s1-head">
+              <span>Capture</span><i class="sp"></i>
+              <span class="keys"><kbd>⌘</kbd><kbd>⇧</kbd><kbd>V</kbd></span>
+            </div>
+            <div class="snip s1">
+              <div class="s1-field"><img src="img/d/s1-link.svg" width="10" height="10" alt=""><span>x.com/emilkowalski/status/18674…</span><i class="caret"></i></div>
+              <div class="s1-rows">
+                <div class="s1-row"><img src="img/d/s1-tweet.svg" width="10" height="10" alt=""><div class="t"><b>Ease-out is the default for anything that enters</b><small>@emilkowalski</small></div><span class="saved">Saved</span></div>
+                <div class="s1-row" style="opacity:.8"><img src="img/d/s1-podcast.svg" width="10" height="10" alt=""><div class="t"><span>Design Details · Motion that respects you</span><small>42:10</small></div><span class="when">2m</span></div>
+                <div class="s1-row" style="opacity:.4"><img src="img/d/s1-article.svg" width="10" height="10" alt=""><div class="t"><span>Perceived duration of interface transitions</span><small>nngroup.com</small></div><span class="when">1h</span></div>
+                <div class="s1-row" style="opacity:.1"><img src="img/d/s1-pdf.svg" width="10" height="10" alt=""><div class="t"><span>Disney’s twelve principles, applied</span><small>PDF · 14 pages</small></div><span class="when">Mon</span></div>
+              </div>
+            </div>
+          </div></div>
+          <div class="loop-copy">
+            <span class="numeral" aria-hidden="true">I</span>
+            <div class="loop-text">
+              <h3>Save in two seconds</h3>
+              <p>Paste a link with ⌘⇧V, drop a PDF, or jot a note. Tweets, articles, podcasts, papers. No folder, no tags, no title to type.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- II · filing -->
+        <article class="loop-item">
+          <div class="tile" aria-hidden="true"><div class="tile-in">
+            <img class="tile-stone" src="img/d/step2-stone.webp" alt="" loading="lazy" style="left:48.1px;top:237.43px;width:358px;height:358px;transform:rotate(-18.95deg)">
+            <img class="tile-shade" src="img/d/step2-shade.png" alt="" style="left:-24.83px;top:-44.5px;width:335px;height:576px;transform:rotate(-90deg)">
+            <div class="snip s2">
+              <div class="snip-row"><span>Filing into Animations</span><i class="sp"></i><span>3 sources · 4 claims</span></div>
+              <div class="flow">
+                <img class="links" src="img/d/s2-links.svg" width="273" height="104" alt="">
+                <div class="src" style="top:8px"><img src="img/d/s2-article.svg" width="9" height="9" alt=""><span>Perceived duration…</span></div>
+                <div class="src" style="top:42px;opacity:.75"><img src="img/d/s2-podcast.svg" width="9" height="9" alt=""><span>Design Details #512</span></div>
+                <div class="src" style="top:76px;opacity:.4"><img src="img/d/s2-tweet.svg" width="9" height="9" alt=""><span>@emilkowalski</span></div>
+                <div class="sec" style="top:8px"><span class="mark">§</span><span>Easing</span><i class="sp"></i><span class="plus">+1</span></div>
+                <div class="sec" style="top:42px;opacity:.75"><span class="mark">§</span><span>Duration</span><i class="sp"></i><span class="plus">+2</span></div>
+                <div class="sec" style="top:76px;opacity:.4"><span class="mark">§</span><span>Springs</span><i class="sp"></i><span class="plus">+1</span></div>
+              </div>
+            </div>
+          </div></div>
+          <div class="loop-copy">
+            <span class="numeral" aria-hidden="true">II</span>
+            <div class="loop-text">
+              <h3>Auto-build guides</h3>
+              <p>Each source or note lands in a guide page. Guides autonomously restructure as they grow: sections split, duplicates merge.</p>
+            </div>
+          </div>
+        </article>
+
+        <!-- III · skills and MCP -->
+        <article class="loop-item">
+          <div class="tile" aria-hidden="true"><div class="tile-in">
+            <img class="tile-stone" src="img/d/step3-stone.webp" alt="" loading="lazy" style="left:76.89px;top:132.06px;width:307.98px;height:307.98px;transform:rotate(7.47deg)">
+            <img class="tile-shade" src="img/d/step3-shade.png" alt="" style="left:59.78px;top:-39.88px;width:314.17px;height:544.51px;transform:rotate(-104.94deg)">
+            <div class="snip s3">
+              <div class="snip-row file"><img src="img/d/s3-file.svg" width="9" height="9" alt=""><span class="mono">easing-for-interfaces/SKILL.md</span><i class="sp"></i><span class="exported"><img src="img/d/s3-check.svg" width="8" height="8" alt="">~/.claude/skills</span></div>
+              <hr>
+              <div class="code">
+                <span class="q">---</span>
+                <span><span class="k">name: </span><span class="p">easing-for-interfaces</span></span>
+                <span><span class="k">description: </span>Choose easing curves and</span>
+                <span style="opacity:.7">  durations for interface motion.</span>
+                <span class="q">---</span>
+                <span class="p" style="opacity:.4">## When to use</span>
+                <span class="s" style="opacity:.2">- Adding or reviewing UI animation</span>
+                <span class="s" style="opacity:.05">- Picking a cubic-bezier</span>
+              </div>
+            </div>
+          </div></div>
+          <div class="loop-copy">
+            <span class="numeral" aria-hidden="true">III</span>
+            <div class="loop-text">
+              <h3>Available for your agent</h3>
+              <p>Create skills from knowledge domains or use the MCP feature to fetch knowledge for a task you’re working on.</p>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ Claude ============ -->
+  <section class="section claude" id="claude" aria-labelledby="claude-title">
+    <div class="wrap claude-grid">
+      <div class="claude-copy">
+        <div class="claude-head">
+          <h2 id="claude-title">Teach Claude<br> what you know.</h2>
+          <p class="claude-lead">Index runs a local MCP server, so Claude can search your guides while you work. And any guide can become a skill with one click.</p>
+        </div>
+        <p class="claude-body">Ask an AI for advice and you get the average of the internet. Give it your library and it answers from what you’ve actually read: the sources you trust, the notes you’ve left and the principles you’ve formed, each one cited. You stop re-explaining your taste in every chat, and the advice starts to sound like you.</p>
+      </div>
+      <div class="claude-shot">
+        <img class="shot-img" src="img/d/skill.webp" width="2020" height="1262" loading="lazy" alt="A skill called easing-for-interfaces in Index, generated from the Animations guide, with its description, provenance and when-to-use list.">
+        <img class="claude-shade" src="img/d/claude-shade.png" width="390" height="1438" alt="" aria-hidden="true">
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ feature list ============ -->
+  <section class="section" aria-labelledby="more-title">
+    <div class="wrap">
+      <div class="section-head">
+        <h2 id="more-title">Quiet, until you need it.</h2>
+      </div>
+      <div class="features">
+        <article class="feature"><img src="img/d/f-keyboard.svg" width="20" height="20" alt=""><h3>Keyboard-first</h3><p>Every action has a shortcut or lives in ⌘K. Search is the home screen.</p></article>
+        <article class="feature"><img src="img/d/f-search.svg" width="20" height="20" alt=""><h3>Find it in two keystrokes</h3><p>Results jump to the exact section, not just the page.</p></article>
+        <article class="feature"><img src="img/d/f-curve.svg" width="20" height="20" alt=""><h3>Pages that move</h3><p>Guides embed live figures: easing curves, spring playgrounds, audio clips.</p></article>
+        <article class="feature"><img src="img/d/f-history.svg" width="20" height="20" alt=""><h3>Version history</h3><p>See what changed and why, with a diff for every rewrite.</p></article>
+        <article class="feature"><img src="img/d/f-restructure.svg" width="20" height="20" alt=""><h3>Restructures itself</h3><p>When a guide outgrows a page, Index proposes sub-pages. You decide.</p></article>
+        <article class="feature"><img src="img/d/f-hash.svg" width="20" height="20" alt=""><h3>Anything you read</h3><p>Articles, tweets, podcasts with timestamps, papers and PDFs.</p></article>
+        <article class="feature"><img src="img/d/f-sun.svg" width="20" height="20" alt=""><h3>Light and dark</h3><p>Dark by default, with a light theme that follows your Mac.</p></article>
+        <article class="feature"><img src="img/d/f-cube.svg" width="20" height="20" alt=""><h3>Native to the Mac</h3><p>Built in Swift and SwiftUI. Fast with thousands of sources.</p></article>
+        <article class="feature"><img src="img/d/f-file.svg" width="20" height="20" alt=""><h3>Skills you own</h3><p>Export SKILL.md folders to ~/.claude/skills. Hand edits survive regeneration.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ waitlist ============ -->
+  <section class="waitlist" id="waitlist" aria-labelledby="waitlist-title">
+    <canvas class="waitlist-stone" id="carve-stone" tabindex="-1" aria-hidden="true"></canvas>
+    <div class="wrap waitlist-inner">
+      <h2 id="waitlist-title">Make AI as <span>good as you</span></h2>
+      <div class="waitlist-form">
+        <form class="form" id="form" novalidate>
+          <label class="sr-only" for="email">Email</label>
+          <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="name@email.com" spellcheck="false" required aria-describedby="error">
+          <button class="btn btn-primary btn-pill" id="submit" type="submit">Join waitlist</button>
+        </form>
+        <p class="form-error" id="error" role="alert"></p>
+        <p class="done" id="done" role="status" hidden></p>
+      </div>
+    </div>
+  </section>
+</main>
+</body>
+</html>
