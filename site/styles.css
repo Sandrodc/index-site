@@ -263,9 +263,12 @@ h1, h2, h3 { color: var(--text-primary); font-family: var(--font-display); font-
 
 /* ---------- feature grid ---------- */
 .features {
+  position: relative;
   display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1px;
-  border-radius: var(--r-xl); overflow: hidden; background: var(--divider); box-shadow: 0 0 0 1px var(--ring-card);
+  border-radius: var(--r-xl); overflow: hidden; background: var(--divider);
 }
+/* the outer ring is drawn inside the box: an outset shadow got painted over by the waitlist section, which starts flush below */
+.features::after { content: ""; position: absolute; inset: 0; border-radius: inherit; box-shadow: inset 0 0 0 1px var(--ring-card); pointer-events: none; }
 .feature { display: grid; align-content: start; gap: var(--s2); min-height: 178px; padding: var(--s8) var(--s6); background: var(--bg-page); transition: background-color 150ms ease-out; }
 .feature:hover { background: oklch(0.155 0.004 286); }
 .feature img { width: 20px; height: 20px; margin-bottom: var(--s3); }
