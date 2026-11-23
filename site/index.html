@@ -184,12 +184,17 @@
     <div class="wrap waitlist-inner">
       <h2 id="waitlist-title">Make AI as <span>good as you</span></h2>
       <div class="waitlist-form">
-        <form class="form" id="form" novalidate>
-          <label class="sr-only" for="email">Email</label>
-          <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="name@email.com" spellcheck="false" required aria-describedby="error">
-          <button class="btn btn-primary btn-pill" id="submit" type="submit">Join waitlist</button>
-        </form>
-        <p class="form-error" id="error" role="alert"></p>
+        <div class="form-wrap">
+          <form class="form" id="form" novalidate>
+            <label class="sr-only" for="email">Email</label>
+            <input class="input" id="email" name="email" type="email" autocomplete="email" placeholder="name@email.com" spellcheck="false" required aria-describedby="error">
+            <!-- honeypot: hidden from people and screen readers; bots that fill every field get filtered out -->
+            <input class="hp" id="company" name="company" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <button class="btn btn-primary btn-pill" id="submit" type="submit">Join waitlist</button>
+          </form>
+          <p class="form-error" id="error" role="alert"></p>
+        </div>
+        <p class="form-note" id="note">We’ll only email you about Index. Unsubscribe anytime.</p>
         <p class="done" id="done" role="status" hidden></p>
       </div>
     </div>

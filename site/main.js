@@ -75,10 +75,15 @@ emailIn.addEventListener('input', () => {
 });
 emailIn.addEventListener('focus', makeCarve, { once: true });
 
-// TODO: replace with the real waitlist endpoint. Until then nothing is sent anywhere.
+// Adds the email to the waitlist (api/waitlist.js → a Resend segment). Nothing else is stored.
 async function joinWaitlist({ email }) {
-  await new Promise((r) => setTimeout(r, 250));
-  return { ok: true, email };
+  const r = await fetch('/api/waitlist', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email, company: $('#company').value }),
+  });
+  const data = await r.json().catch(() => ({}));
+  return { ok: r.ok && data.ok, status: r.status, error: data.error };
 }
 
 // bring the stone into view by scrolling the page only, never a clipped box inside it
@@ -101,14 +106,16 @@ form.addEventListener('submit', async (e) => {
   const res = await joinWaitlist({ email }).catch(() => ({ ok: false }));
   if (!res.ok) {
     btn.disabled = false; btn.textContent = 'Join waitlist';
-    showError('That didn’t go through. Try again in a moment.');
+    showError(res.status === 429 ? 'Too many tries. Wait a few minutes and try again.'
+      : res.error === 'invalid_email' ? 'That email doesn’t look right, like name@example.com.'
+      : 'That didn’t go through. Try again in a moment.');
     return;
   }
   btn.textContent = 'Carving…';
   revealStone();
   await carve.ready;
   await carve.engrave(name);
-  form.hidden = true;
+  form.hidden = true; $('#note').hidden = true;
   done.innerHTML = '<strong>Carved. You’re on the list.</strong> <span></span>';
   done.querySelector('span').textContent = `We’ll write to ${email} when there’s a build for you.`;
   done.hidden = false;

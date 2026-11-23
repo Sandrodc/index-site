@@ -286,7 +286,7 @@ h1, h2, h3 { color: var(--text-primary); font-family: var(--font-display); font-
 .waitlist-inner { --max: var(--max-wide); display: grid; justify-items: start; gap: var(--s20); }
 .waitlist h2 { max-width: 646px; font-size: var(--t-cta); line-height: 0.98; letter-spacing: -0.045em; color: oklch(1 0 0); }
 .waitlist h2 span { color: oklch(1 0 0 / 0.6); }
-.waitlist-form { position: relative; }
+.waitlist-form, .form-wrap { position: relative; }   /* the error line hangs under the form, not under the note */
 .form { display: flex; gap: var(--s3); align-items: end; }
 .input {
   width: 359px; height: 44px; padding-inline: 14px; border: 0; border-radius: 999px;
@@ -304,6 +304,8 @@ h1, h2, h3 { color: var(--text-primary); font-family: var(--font-display); font-
 .form .btn:disabled { background: var(--bg-hover); color: var(--text-tertiary); cursor: default; transform: none; }
 .form-error { position: absolute; top: calc(100% + var(--s3)); left: 0; right: 0; min-height: 18px; padding-inline: 14px; color: var(--danger); font-size: var(--t-caption); line-height: 18px; display: flex; gap: 6px; align-items: center; }
 .form-error:empty { visibility: hidden; }
+.form-note { margin-top: calc(var(--s3) * 2 + 18px); padding-inline: 14px; color: var(--text-quaternary); font-size: var(--t-caption); line-height: 18px; }   /* sits below the error line, so the two never overlap */
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .form-error svg { width: 14px; height: 14px; flex: none; }
 .done { max-width: 460px; min-height: 44px; color: var(--text-secondary); font-size: var(--t-small); line-height: 1.6; text-wrap: pretty; animation: done-in 300ms cubic-bezier(0.23, 1, 0.32, 1); }
 .done strong { color: var(--text-primary); font-weight: var(--w-semibold); }

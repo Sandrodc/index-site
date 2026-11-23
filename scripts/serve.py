@@ -3,6 +3,7 @@
 so a browser never runs a stale main.js or stone.js after an edit (plain http.server lets browsers cache
 modules heuristically, which made fixes look like they hadn't landed)."""
 import functools
+import json
 import http.server
 import sys
 from pathlib import Path
@@ -15,6 +16,18 @@ class NoStore(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Cache-Control", "no-store")
         super().end_headers()
+
+    # Local stand-in for api/waitlist.js (which runs on Vercel): accepts the signup without sending it anywhere.
+    # An email containing "fail" returns an error, to try the form's error state.
+    def do_POST(self):
+        if self.path != "/api/waitlist":
+            self.send_error(404); return
+        body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+        ok = "fail" not in str(body.get("email", ""))
+        out = json.dumps({"ok": ok}).encode()
+        self.send_response(200 if ok else 502)
+        self.send_header("Content-Type", "application/json"); self.send_header("Content-Length", str(len(out)))
+        self.end_headers(); self.wfile.write(out)
 
 
 NoStore.extensions_map.update({".js": "text/javascript", ".mjs": "text/javascript", ".glb": "model/gltf-binary", ".webp": "image/webp"})
