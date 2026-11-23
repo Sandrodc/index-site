@@ -27,7 +27,11 @@ function loadShared() {
       new FontFace('IxRunic', `url(${new URL('fonts/NotoSansRunic-Regular.woff2', BASE)})`),
     ];
     await Promise.all(faces.map((f) => f.load().then((ff) => document.fonts.add(ff))));
+    // granite detail tile (scripts/gen-granite.py): baked crystals + relief, sampled once per pixel
+    const grainP = new THREE.TextureLoader().loadAsync(new URL('img/granite-detail.webp', BASE).href);
     const gltf = await new GLTFLoader().loadAsync(new URL('models/granite.glb', BASE).href);
+    const grain = await grainP;
+    grain.wrapS = grain.wrapT = THREE.RepeatWrapping; grain.colorSpace = THREE.NoColorSpace;
     let src; gltf.scene.traverse((o) => { if (o.isMesh && !src) src = o; });
     const geo = src.geometry;
     geo.setAttribute('cuv', geo.getAttribute('uv'));
@@ -48,7 +52,7 @@ function loadShared() {
     const pts = [];
     for (let i = 0; i < pos.count; i++) if (fr[i] > 0.5) pts.push([pos.getX(i), pos.getY(i)]);
     const hull = convexHull(pts);
-    return { geo, faceZ, off, hull };
+    return { geo, faceZ, off, hull, grain };
   })();
   return shared;
 }
@@ -184,7 +188,7 @@ export function createStone(canvas, opts = {}) {
   key.shadow.bias = -0.0004; key.shadow.normalBias = 0.02;
   key.shadow.camera.near = 2; key.shadow.camera.far = 12;
   scene.add(key, key.target);
-  const rim = new THREE.DirectionalLight(0x9fb4ff, 0.35); rim.position.set(CINE ? 3.2 : 2.5, CINE ? 1.4 : 2.2, -3); scene.add(rim);
+  const rim = new THREE.DirectionalLight(opts.look === 'cinematic' ? 0xdfe5f0 : 0x9fb4ff, 0.35); rim.position.set(CINE ? 3.2 : 2.5, CINE ? 1.4 : 2.2, -3); scene.add(rim);
   const hemi = new THREE.HemisphereLight(0x9aa4b8, 0x080808, 0.05); scene.add(hemi);
   const lantern = new THREE.PointLight(0xffcf9a, 0, 0, 2);
   lantern.castShadow = true; lantern.shadow.mapSize.set(1024, 1024); lantern.shadow.bias = -0.002; scene.add(lantern);
@@ -212,7 +216,7 @@ export function createStone(canvas, opts = {}) {
     uTexel: { value: new THREE.Vector2(1 / CW, 1 / CH) }, uSize: { value: new THREE.Vector2(W, H) },
     uDepth: { value: P.depth / 1000 }, uLight: { value: new THREE.Vector3(0, 0, 5) },
     uGlowMode: { value: 0 }, uGlowGain: { value: 1 },
-    uAlbedo: { value: opts.albedo ?? 1 }, uSpeck: { value: opts.speck ?? 160 },
+    uAlbedo: { value: opts.albedo ?? 1 }, uBump: { value: opts.bump ?? 0.0006 }, uGrain: { value: null },
   };
   const stoneMat = new THREE.MeshStandardMaterial({ color: 0xffffff, roughness: 0.7, metalness: 0, envMapIntensity: 0.15 });
   stoneMat.onBeforeCompile = (sh) => {
@@ -220,16 +224,16 @@ export function createStone(canvas, opts = {}) {
     sh.vertexShader = sh.vertexShader
       .replace('#include <common>', `#include <common>
         attribute vec2 cuv; attribute float front;
-        varying vec2 vCuv; varying float vFront; varying vec3 vObj; varying vec3 vTv; varying vec3 vBv;`)
+        varying vec2 vCuv; varying float vFront; varying vec3 vObj; varying vec3 vObjN; varying vec3 vTv; varying vec3 vBv;`)
       .replace('#include <begin_vertex>', `#include <begin_vertex>
-        vCuv = cuv; vFront = front; vObj = position;
+        vCuv = cuv; vFront = front; vObj = position; vObjN = normal;
         vTv = normalize(normalMatrix * vec3(1.0, 0.0, 0.0));
         vBv = normalize(normalMatrix * vec3(0.0, 1.0, 0.0));`);
     sh.fragmentShader = sh.fragmentShader
       .replace('#include <common>', `#include <common>
         uniform sampler2D uCarve; uniform sampler2D uGlow; uniform vec2 uTexel; uniform vec2 uSize;
-        uniform float uDepth; uniform vec3 uLight; uniform float uGlowMode; uniform float uGlowGain; uniform float uAlbedo; uniform float uSpeck;
-        varying vec2 vCuv; varying float vFront; varying vec3 vObj; varying vec3 vTv; varying vec3 vBv;
+        uniform float uDepth; uniform vec3 uLight; uniform float uGlowMode; uniform float uGlowGain; uniform float uAlbedo; uniform float uBump; uniform sampler2D uGrain;
+        varying vec2 vCuv; varying float vFront; varying vec3 vObj; varying vec3 vObjN; varying vec3 vTv; varying vec3 vBv;
         float hsh(vec3 p){ p = fract(p * 0.3183099 + 0.1); p *= 17.0; return fract(p.x * p.y * p.z * (p.x + p.y + p.z)); }
         float vn(vec3 x){ vec3 i = floor(x); vec3 f = fract(x); f = f * f * (3.0 - 2.0 * f);
           return mix(mix(mix(hsh(i), hsh(i + vec3(1,0,0)), f.x), mix(hsh(i + vec3(0,1,0)), hsh(i + vec3(1,1,0)), f.x), f.y),
@@ -241,22 +245,33 @@ export function createStone(canvas, opts = {}) {
       .replace('#include <color_fragment>', `#include <color_fragment>
         float fw = smoothstep(0.5, 0.9, vFront);
         vec3 P3 = vObj;
+        // granite: the baked tile (crystals, mica) on a softly mottled body. The face lies in XY; the sides
+        // take whichever axis plane they face most, which is seamless enough on broken rock.
+        vec3 an = abs(normalize(vObjN));
+        vec2 tuv = an.z >= max(an.x, an.y) ? P3.xy : (an.x >= an.y ? P3.yz : P3.xz);
+        vec4 gt = texture2D(uGrain, tuv * 5.0);           // 5 tiles per metre (0.2 m tile)
         float m = vn(P3 * 6.0) * 0.5 + vn(P3 * 21.0) * 0.32 + vn(P3 * 57.0) * 0.18;
-        float filt = clamp(length(fwidth(P3)) * uSpeck, 0.0, 1.0);
-        float wf = mix(smoothstep(0.83, 0.9, vn(P3 * 170.0)), 0.04, filt);
-        float kf = mix(smoothstep(0.72, 0.80, vn(P3 * 120.0 + 11.0)), 0.12, filt * 0.8);
-        vec3 gran = vec3(mix(0.03, 0.075, m)) * vec3(0.98, 0.99, 1.03) * uAlbedo;   // albedo lifts the body, not the flecks
-        gran *= 1.0 - 0.55 * kf;
-        gran += vec3(0.2, 0.195, 0.19) * wf;
-        gran = mix(gran * 0.7, gran, fw);
+        vec3 gran = vec3(pow(gt.r, 2.2) * 0.25) * mix(0.72, 1.32, m) * vec3(0.99, 1.0, 1.02) * uAlbedo;
+        gran = mix(gran * 0.72, gran, fw);
         float hC = fw > 0.01 ? carveAt(vCuv) : 0.0;
         gran = mix(gran, gran * 1.45 + 0.03, smoothstep(0.04, 0.35, hC) * fw);
         gran *= 1.0 - 0.3 * hC * fw;
-        diffuseColor.rgb = gran;`)
+        diffuseColor.rgb = gran;
+        // relief for the bump below: the crystals on the dressed face; the scanned broken rock on the sides
+        float relief = gt.g;
+        if (fw < 0.99) relief = mix(texture2D(uGrain, tuv * 1.5).b * 7.0 + gt.g, gt.g, fw);`)
       .replace('#include <roughnessmap_fragment>', `#include <roughnessmap_fragment>
         roughnessFactor = mix(0.92, 0.58, fw);
         roughnessFactor = mix(roughnessFactor, 0.95, smoothstep(0.05, 0.3, hC) * fw);`)
       .replace('#include <normal_fragment_maps>', `#include <normal_fragment_maps>
+        {   // screen-space bump from the relief (no texture, one derivative pair)
+          vec3 dpx = dFdx(-vViewPosition), dpy = dFdy(-vViewPosition);
+          float dhx = dFdx(relief), dhy = dFdy(relief);
+          vec3 r1 = cross(dpy, normal), r2 = cross(normal, dpx);
+          float det = dot(dpx, r1);
+          vec3 grad = sign(det) * (dhx * r1 + dhy * r2);
+          normal = normalize(abs(det) * normal - grad * uBump);
+        }
         if (fw > 0.01) {
           float hl = carveAt(vCuv - vec2(uTexel.x, 0.0)), hr = carveAt(vCuv + vec2(uTexel.x, 0.0));
           float hu = carveAt(vCuv - vec2(0.0, uTexel.y)), hd = carveAt(vCuv + vec2(0.0, uTexel.y));
@@ -272,7 +287,7 @@ export function createStone(canvas, opts = {}) {
           vec3 gc;
           if (uGlowMode < 1.5) gc = vec3(1.0, 0.25, 0.04) * smoothstep(0.0, 0.45, g) + vec3(1.0, 0.6, 0.2) * smoothstep(0.35, 0.8, g) + vec3(0.5, 0.45, 0.35) * smoothstep(0.75, 1.0, g);
           else if (uGlowMode < 2.5) gc = engine(vCuv.x * 1.6 - 0.3) * 1.4;
-          else gc = vec3(1.0, 0.86, 0.66) * smoothstep(0.0, 0.5, g) + vec3(0.6, 0.62, 0.7) * smoothstep(0.5, 1.0, g);
+          else gc = vec3(0.93, 0.94, 0.97) * smoothstep(0.0, 0.5, g) + vec3(0.62, 0.64, 0.7) * smoothstep(0.5, 1.0, g);
           totalEmissiveRadiance += gc * g * boost * uGlowGain;
         }`)
       .replace('#include <lights_fragment_end>', `#include <lights_fragment_end>
@@ -387,7 +402,7 @@ export function createStone(canvas, opts = {}) {
         vec4 mv = modelViewMatrix * vec4(p, 1.0); gl_Position = projectionMatrix * mv;
         gl_PointSize = (0.006 + seed * 0.008) * uScale / -mv.z;
         vA = beam * (0.25 + 0.75 * fract(seed * 7.13)) * 0.35 * uGain; }`,
-    fragmentShader: `varying float vA; void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.0, d) * vA; if (a < 0.003) discard; gl_FragColor = vec4(vec3(1.0, 0.96, 0.9), a); }`,
+    fragmentShader: `varying float vA; void main(){ float d = length(gl_PointCoord - 0.5); float a = smoothstep(0.5, 0.0, d) * vA; if (a < 0.003) discard; gl_FragColor = vec4(vec3(0.96, 0.97, 1.0), a); }`,
   }));
   motes.frustumCulled = false; scene.add(motes);
 
@@ -654,8 +669,8 @@ export function createStone(canvas, opts = {}) {
         after(t + 0.6, done);
       },
     },
-    light: {
-      keyColor: 0xffe6c7, keyGain: 1.15, rim: 0.9, hemi: 0.012, env: 0.08, bloom: 0.42, glow: 3, tilt: 1, lantern: false, motes: 1.4,
+    light: {   // neutral studio white, like the Blender renders
+      keyColor: 0xf4f6fa, keyGain: 1.15, rim: 0.9, hemi: 0.012, env: 0.08, bloom: 0.42, glow: 3, tilt: 1, lantern: false, motes: 1.4,
       knock(p, uv) {
         sfx.chime(Math.floor(Math.random() * 6)); impulse(p, 0.18);
         tw(FX, 'flare', 0, 1.1, { from: 1, ease: E.out }); emit(p, 18, 'mote');
@@ -921,8 +936,9 @@ export function createStone(canvas, opts = {}) {
   new IntersectionObserver(([e]) => { inView = e.isIntersecting; wake(); }, { rootMargin: '120px' }).observe(canvas);
 
   // boot
-  const ready = loadShared().then(({ geo, faceZ, off, hull }) => {
+  const ready = loadShared().then(({ geo, faceZ, off, hull, grain }) => {
     FACE_Z = faceZ; OFF = off; HULL = hull;
+    grain.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy()); U.uGrain.value = grain;
     mesh = new THREE.Mesh(geo, stoneMat);
     mesh.castShadow = mesh.receiveShadow = true;
     stone.add(mesh);
