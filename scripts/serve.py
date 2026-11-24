@@ -12,9 +12,16 @@ ROOT = Path(__file__).resolve().parent.parent   # Index-site/
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 4173
 
 
+# the same security headers Vercel sends (vercel.json), so a CSP break shows up here before it ships
+HEADERS = [(h["key"], h["value"]) for rule in json.loads((ROOT / "vercel.json").read_text())["headers"] for h in rule["headers"]]
+HEADERS = [(k, v.replace("; upgrade-insecure-requests", "")) for k, v in HEADERS]   # localhost is plain http
+
+
 class NoStore(http.server.SimpleHTTPRequestHandler):
     def end_headers(self):
         self.send_header("Cache-Control", "no-store")
+        for k, v in HEADERS:
+            self.send_header(k, v)
         super().end_headers()
 
     # Local stand-in for api/waitlist.js (which runs on Vercel): accepts the signup without sending it anywhere.
