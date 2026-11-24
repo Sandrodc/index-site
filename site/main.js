@@ -5,7 +5,7 @@ const $ = (s) => document.querySelector(s);
 // Both stones share one look: a raking warm key, a cool rim, deep shadows, and light (not dust) when touched.
 const LOOK = { look: 'cinematic', variant: 'light', res: 2, albedo: 2, speck: 70, graze: 20, light: 1.6 };
 
-// ---------- hero stone: tap to decode the runes into INDEX · KEEP WHAT YOU READ
+// ---------- hero stone: tap to decode the runes into SUPERDEX · KEEP WHAT YOU READ
 // Sits centred and high, with the copy over its lower-left corner (Figma: Hero).
 const wide = (w) => w >= 900;
 createStone($('#hero-stone'), {

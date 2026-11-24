@@ -1,9 +1,9 @@
-// POST /api/waitlist  { email, company }  →  adds the email to the Index waitlist segment in Resend.
+// POST /api/waitlist  { email, company }  →  adds the email to the Superdex waitlist segment in Resend.
 //
 // Env (Vercel → Settings → Environment Variables):
 //   RESEND_API_KEY     full-access key (secret; never in the repo)
-//   RESEND_SEGMENT_ID  the "Index waitlist" segment (optional: defaults to the one below)
-//   RESEND_FROM        optional, e.g. "Index <hello@example.com>": when set, sends a short confirmation email
+//   RESEND_SEGMENT_ID  the "Superdex waitlist" segment (optional: defaults to the one below)
+//   RESEND_FROM        optional, e.g. "Superdex <hello@example.com>": when set, sends a short confirmation email
 //
 // Stores nothing itself: the contact lives in Resend, where it can be exported or deleted.
 
@@ -63,8 +63,8 @@ export default async function handler(req, res) {
       await resend('/emails', {
         from: process.env.RESEND_FROM,
         to: email,
-        subject: 'You’re on the Index waitlist',
-        text: 'Thanks for joining the Index waitlist. We’ll write when there’s a build for you.\n\nIf this wasn’t you, reply and we’ll remove your address.',
+        subject: 'You’re on the Superdex waitlist',
+        text: 'Thanks for joining the Superdex waitlist. We’ll write when there’s a build for you.\n\nIf this wasn’t you, reply and we’ll remove your address.',
       }).catch((e) => console.error('waitlist: confirmation', e));
     }
     return res.status(200).json({ ok: true });

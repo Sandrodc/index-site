@@ -1,4 +1,4 @@
-/* Index site. Colours are Design/Tokens.json (dark) expressed in OKLCH; names follow the app's tokens.
+/* Superdex site. Colours are Design/Tokens.json (dark) expressed in OKLCH; names follow the app's tokens.
    Layout follows the Figma "Site design" frame (1440 wide): hero copy and waitlist at 60px, sections at 160px. */
 :root {
   color-scheme: dark;

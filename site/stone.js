@@ -1,5 +1,5 @@
-// Index stone: the granite tablet from proto/stone, packaged so the site can mount it twice.
-//   createStone(canvas, { mode: 'hero' })   runic inscription that decodes to INDEX, tap by tap
+// Superdex stone: the granite tablet from proto/stone, packaged so the site can mount it twice.
+//   createStone(canvas, { mode: 'hero' })   runic inscription that decodes to SUPERDEX, tap by tap
 //   createStone(canvas, { mode: 'carve' })  an empty face; stone.engrave(name) carves a name into it
 // Rendering, material and carving are the prototype's; page-specific chrome (panel, picker, wheel) is gone.
 import * as THREE from 'three';
@@ -516,8 +516,8 @@ export function createStone(canvas, opts = {}) {
   }
   function buildInscription() {
     glyphs.length = 0;
-    // ᛁᚾᛞᛖᚲᛋ -> INDEX, one slot per tap; ᚲᛋ (k+s) collapses into X
-    const line1 = layoutLine([['ᛁ', 'I'], ['ᚾ', 'N'], ['ᛞ', 'D'], ['ᛖ', 'E'], ['ᚲᛋ', 'X']], RUNE, 210, 14, CINZEL(800), 196, 28, 34, 1130);
+    // ᛋᚢᛈᛖᚱᛞᛖᚲᛋ -> SUPERDEX, one slot per tap; ᚲᛋ (k+s) collapses into X
+    const line1 = layoutLine([['ᛋ', 'S'], ['ᚢ', 'U'], ['ᛈ', 'P'], ['ᛖ', 'E'], ['ᚱ', 'R'], ['ᛞ', 'D'], ['ᛖ', 'E'], ['ᚲᛋ', 'X']], RUNE, 145, 9, CINZEL(800), 132, 16, 18, 1130);
     const line2 = layoutLine([['ᚲᛖᛖᛈ', 'KEEP'], ['ᚹᚺᚨᛏ', 'WHAT'], ['ᛃᛟᚢ', 'YOU'], ['ᚱᛖᚨᛞ', 'READ']], RUNE, 84, 8, CINZEL(800), 60, 10, 46, 1340);
     for (const u of [...line1, ...line2]) u.runes.forEach((g) => (g.depth = 1));
     STEPS = [...line1.map((u) => [u]), line2];
