@@ -59,8 +59,9 @@
   --s2: 8px; --s3: 12px; --s4: 16px; --s5: 20px; --s6: 24px; --s8: 32px; --s10: 40px; --s16: 64px; --s20: 80px;
   --section: clamp(96px, 12.2vw, 176px);
   --gutter: clamp(16px, 4vw, 40px);
-  --max: 1120px;       /* sections: 160px in at 1440 */
-  --max-wide: 1320px;  /* hero, showcase, waitlist: 60px in at 1440 */
+  /* Fixed up to 1920 (like Linear, which holds 1344). Wider screens grow the containers so the margins don't swallow the page. */
+  --max: clamp(1120px, 1120px + (100vw - 1920px) * 0.4, 1360px);        /* sections: 160px in at 1440, 1360 from ~2520 */
+  --max-wide: clamp(1320px, 1320px + (100vw - 1920px) * 0.5, 1600px);   /* hero, showcase, waitlist: 60px in at 1440, 1600 from ~2480 */
 
   --r-lg: 12px; --r-xl: 16px;
 }
